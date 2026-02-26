@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ferretería Central — Catálogo de Productos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy:    '#0f2d4e',
+              blue:    '#1a4f7a',
+              steel:   '#2d7dd2',
+              light:   '#e8f4fd',
+              orange:  '#e85d04',
+              amber:   '#f48c06',
+              yellow:  '#ffd166',
+              gray:    '#f0f4f8',
+              dark:    '#1c2b3a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .badge { display: inline-flex; align-items: center; gap: 4px; }
+    #no-results { display: none; }
+  </style>
+</head>
+<body class="bg-brand-gray font-sans text-brand-dark min-h-screen">
+
+  <!-- ===== HEADER ===== -->
+  <header class="bg-brand-navy shadow-xl sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+
+        <!-- Logo & nombre -->
+        <div class="flex items-center gap-3">
+          <div class="bg-brand-orange rounded-lg p-2 flex items-center justify-center">
+            <!-- Icono martillo SVG -->
+            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L5 5m4.121 4.121L5 14
+                   a2 2 0 000 2.828l2.172 2.172a2 2 0 002.828 0L14 15" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-white text-lg sm:text-2xl font-extrabold tracking-tight leading-none">
+              Ferretería Central
+            </h1>
+            <p class="text-brand-yellow text-xs font-medium tracking-widest uppercase hidden sm:block">
+              Catálogo de Productos
+            </p>
+          </div>
+        </div>
+
+        <!-- Contador de productos -->
+        <div class="text-right hidden sm:block">
+          <span id="product-count" class="text-brand-yellow font-bold text-lg"></span>
+          <p class="text-blue-300 text-xs">productos disponibles</p>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== HERO / BUSCADOR ===== -->
+  <section class="bg-gradient-to-br from-brand-blue to-brand-navy py-10 sm:py-14">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-white text-2xl sm:text-4xl font-extrabold mb-2">
+        Encuentra lo que necesitas
+      </h2>
+      <p class="text-blue-200 mb-8 text-sm sm:text-base">
+        Busca entre nuestro catálogo de herramientas, materiales y más.
+      </p>
+
+      <!-- Barra de búsqueda -->
+      <div class="relative max-w-xl mx-auto">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+        </div>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Buscar producto por nombre..."
+          class="w-full pl-12 pr-4 py-3.5 rounded-xl text-brand-dark bg-white shadow-lg
+                 border-2 border-transparent focus:outline-none focus:border-brand-orange
+                 text-sm sm:text-base placeholder-gray-400 transition"
+        />
+        <button
+          id="clear-btn"
+          class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400
+                 hover:text-brand-orange transition hidden"
+          title="Limpiar búsqueda"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Filtros por categoría -->
+      <div id="category-filters" class="flex flex-wrap justify-center gap-2 mt-6"></div>
+    </div>
+  </section>
+
+  <!-- ===== GRID DE PRODUCTOS ===== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Contador de resultados -->
+    <div class="flex items-center justify-between mb-6">
+      <p id="results-label" class="text-sm text-gray-500 font-medium"></p>
+    </div>
+
+    <!-- Grid -->
+    <div id="products-grid"
+         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    </div>
+
+    <!-- Sin resultados -->
+    <div id="no-results" class="text-center py-20">
+      <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h3 class="text-gray-400 text-lg font-semibold">Sin resultados</h3>
+      <p class="text-gray-400 text-sm mt-1">No encontramos productos que coincidan con tu búsqueda.</p>
+    </div>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-brand-navy mt-12 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+      <p class="text-blue-300 text-sm">
+        &copy; 2026 <span class="text-white font-semibold">Ferretería Central</span>.
+        Catálogo de productos — Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ===== DATOS Y LÓGICA ===== -->
+  <script>
+    /* -------------------------------------------------------
+       DATOS DE PRODUCTOS
+       Para agregar un nuevo producto, añade un objeto al array
+       con los mismos campos: id, nombre, descripcion, categoria,
+       url_imagen y link_proveedor.
+    ------------------------------------------------------- */
+    const productos = [
+      {
+        id: 1,
+        nombre: "Taladro Percutor 700W",
+        descripcion: "Taladro percutor profesional con manija lateral, maletín y set de 13 brocas incluidas.",
+        categoria: "herramientas",
+        url_imagen: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&q=80",
+        link_proveedor: "https://example.com/taladro-percutor"
+      },
+      {
+        id: 2,
+        nombre: "Pintura Látex Interior Blanco 20L",
+        descripcion: "Pintura látex lavable de alto rendimiento para interiores, secado rápido y cobertura superior.",
+        categoria: "pintura",
+        url_imagen: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&q=80",
+        link_proveedor: "https://example.com/pintura-latex"
+      },
+      {
+        id: 3,
+        nombre: "Juego de Destornilladores 12 pzas",
+        descripcion: "Set completo con destornilladores planos y Phillips en diferentes medidas, mango ergonómico.",
+        categoria: "herramientas",
+        url_imagen: "https://images.unsplash.com/photo-1581166397057-235af2b3c6dd?w=400&q=80",
+        link_proveedor: "https://example.com/destornilladores"
+      },
+      {
+        id: 4,
+        nombre: "Cemento Portland 50kg",
+        descripcion: "Cemento Portland tipo I de uso general, ideal para estructuras, pisos y revoques.",
+        categoria: "construcción",
+        url_imagen: "https://images.unsplash.com/photo-1590599145008-e4ec48bdb5e1?w=400&q=80",
+        link_proveedor: "https://example.com/cemento-portland"
+      },
+      {
+        id: 5,
+        nombre: "Llave de Tubo Ajustable 18\"",
+        descripcion: "Llave de tubo de acero forjado con quijada ajustable, acabado anticorrosión.",
+        categoria: "plomería",
+        url_imagen: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&q=80",
+        link_proveedor: "https://example.com/llave-tubo"
+      },
+      {
+        id: 6,
+        nombre: "Rodillo para Pintura 23cm",
+        descripcion: "Rodillo de lana natural para pintura látex y esmalte, alta absorción y acabado parejo.",
+        categoria: "pintura",
+        url_imagen: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
+        link_proveedor: "https://example.com/rodillo-pintura"
+      },
+      {
+        id: 7,
+        nombre: "Cable Eléctrico 2.5mm x 100m",
+        descripcion: "Rollo de cable unipolar THHN 2.5mm², aislamiento termoplástico, color rojo.",
+        categoria: "electricidad",
+        url_imagen: "https://images.unsplash.com/photo-1601974704572-acbb17f2c57b?w=400&q=80",
+        link_proveedor: "https://example.com/cable-electrico"
+      },
+      {
+        id: 8,
+        nombre: "Sierra Circular 7¼\" 1400W",
+        descripcion: "Sierra circular con guía láser integrada, base de aluminio y hoja de tungsteno de 24 dientes.",
+        categoria: "herramientas",
+        url_imagen: "https://images.unsplash.com/photo-1609793807520-87b09b4c36dc?w=400&q=80",
+        link_proveedor: "https://example.com/sierra-circular"
+      },
+      {
+        id: 9,
+        nombre: "Esmalte Sintético Negro Brillante 1L",
+        descripcion: "Esmalte sintético de secado rápido, alta resistencia a la intemperie y óxido.",
+        categoria: "pintura",
+        url_imagen: "https://images.unsplash.com/photo-1526045612212-70caf35c14df?w=400&q=80",
+        link_proveedor: "https://example.com/esmalte-sintetico"
+      },
+      {
+        id: 10,
+        nombre: "Caño PVC Presión 1\" x 6m",
+        descripcion: "Caño de PVC rígido para instalaciones de agua fría a presión, certificado NSF.",
+        categoria: "plomería",
+        url_imagen: "https://images.unsplash.com/photo-1558618047-f4e60cef3895?w=400&q=80",
+        link_proveedor: "https://example.com/cano-pvc"
+      },
+      {
+        id: 11,
+        nombre: "Martillo de Carpintero 500g",
+        descripcion: "Martillo de carpintero con cabeza de acero templado y mango de fibra de vidrio antideslizante.",
+        categoria: "herramientas",
+        url_imagen: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&q=80",
+        link_proveedor: "https://example.com/martillo-carpintero"
+      },
+      {
+        id: 12,
+        nombre: "Tomacorriente Doble con Tierra",
+        descripcion: "Tomacorriente bipolar 10A con contacto a tierra, apto para instalación empotrada.",
+        categoria: "electricidad",
+        url_imagen: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
+        link_proveedor: "https://example.com/tomacorriente"
+      }
+    ];
+
+    /* -------------------------------------------------------
+       CONFIGURACIÓN DE CATEGORÍAS
+    ------------------------------------------------------- */
+    const categoriaConfig = {
+      herramientas: { label: "Herramientas",   color: "bg-blue-100 text-blue-800",   dot: "bg-blue-500"   },
+      pintura:      { label: "Pintura",         color: "bg-yellow-100 text-yellow-800", dot: "bg-yellow-500" },
+      construcción: { label: "Construcción",    color: "bg-stone-100 text-stone-700", dot: "bg-stone-500"  },
+      plomería:     { label: "Plomería",        color: "bg-cyan-100 text-cyan-800",   dot: "bg-cyan-500"   },
+      electricidad: { label: "Electricidad",    color: "bg-orange-100 text-orange-800", dot: "bg-orange-500" },
+    };
+
+    function getCatConfig(cat) {
+      return categoriaConfig[cat] || { label: cat, color: "bg-gray-100 text-gray-700", dot: "bg-gray-400" };
+    }
+
+    /* -------------------------------------------------------
+       ESTADO DE LA APLICACIÓN
+    ------------------------------------------------------- */
+    let filtroTexto    = "";
+    let filtroCategoria = "todas";
+
+    /* -------------------------------------------------------
+       RENDERIZADO DE TARJETAS
+    ------------------------------------------------------- */
+    function renderizarProductos() {
+      const grid      = document.getElementById("products-grid");
+      const noResults = document.getElementById("no-results");
+      const label     = document.getElementById("results-label");
+
+      const filtrados = productos.filter(p => {
+        const coincideTexto = p.nombre.toLowerCase().includes(filtroTexto.toLowerCase());
+        const coincideCat   = filtroCategoria === "todas" || p.categoria === filtroCategoria;
+        return coincideTexto && coincideCat;
+      });
+
+      grid.innerHTML = "";
+
+      if (filtrados.length === 0) {
+        noResults.style.display = "block";
+        label.textContent = "";
+      } else {
+        noResults.style.display = "none";
+        label.textContent =
+          filtroTexto || filtroCategoria !== "todas"
+            ? `${filtrados.length} resultado${filtrados.length !== 1 ? "s" : ""} encontrado${filtrados.length !== 1 ? "s" : ""}`
+            : `Mostrando ${filtrados.length} productos`;
+
+        filtrados.forEach(producto => {
+          const cfg  = getCatConfig(producto.categoria);
+          const card = document.createElement("article");
+          card.className = `
+            bg-white rounded-2xl overflow-hidden shadow-md card-hover
+            flex flex-col border border-gray-100
+          `;
+          card.innerHTML = `
+            <!-- Imagen -->
+            <div class="relative h-48 bg-gray-100 overflow-hidden">
+              <img
+                src="${producto.url_imagen}"
+                alt="${producto.nombre}"
+                class="w-full h-full object-cover transition duration-300 hover:scale-105"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='https://placehold.co/400x300/e8f4fd/1a4f7a?text=Sin+imagen';"
+              />
+              <!-- Badge categoría -->
+              <span class="absolute top-3 left-3 badge ${cfg.color} text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
+                <span class="w-1.5 h-1.5 rounded-full ${cfg.dot} inline-block"></span>
+                ${cfg.label}
+              </span>
+            </div>
+
+            <!-- Contenido -->
+            <div class="flex flex-col flex-1 p-5">
+              <h3 class="font-bold text-brand-dark text-base leading-snug mb-2">
+                ${producto.nombre}
+              </h3>
+              <p class="text-gray-500 text-sm leading-relaxed flex-1">
+                ${producto.descripcion}
+              </p>
+
+              <!-- Botón -->
+              <a
+                href="${producto.link_proveedor}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-5 flex items-center justify-center gap-2 w-full
+                       bg-brand-orange hover:bg-orange-600 active:bg-orange-700
+                       text-white font-semibold text-sm py-2.5 px-4 rounded-xl
+                       transition duration-150 shadow-sm hover:shadow-md"
+              >
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4
+                       M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Ver Ficha en Proveedor
+              </a>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    /* -------------------------------------------------------
+       FILTROS DE CATEGORÍA
+    ------------------------------------------------------- */
+    function renderizarFiltros() {
+      const container = document.getElementById("category-filters");
+      const categorias = ["todas", ...new Set(productos.map(p => p.categoria))];
+
+      categorias.forEach(cat => {
+        const cfg    = cat === "todas" ? { label: "Todas" } : getCatConfig(cat);
+        const btn    = document.createElement("button");
+        const isActive = filtroCategoria === cat;
+
+        btn.dataset.cat = cat;
+        btn.className = `
+          px-4 py-1.5 rounded-full text-sm font-medium transition duration-150
+          focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-1
+          ${isActive
+            ? "bg-brand-orange text-white shadow-md"
+            : "bg-white/20 text-white hover:bg-white/30"}
+        `;
+        btn.textContent = cfg.label;
+        btn.addEventListener("click", () => {
+          filtroCategoria = cat;
+          renderizarFiltros();
+          renderizarProductos();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    /* -------------------------------------------------------
+       BUSCADOR EN TIEMPO REAL
+    ------------------------------------------------------- */
+    const searchInput = document.getElementById("search-input");
+    const clearBtn    = document.getElementById("clear-btn");
+
+    searchInput.addEventListener("input", e => {
+      filtroTexto = e.target.value;
+      clearBtn.classList.toggle("hidden", filtroTexto === "");
+      renderizarProductos();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      filtroTexto       = "";
+      clearBtn.classList.add("hidden");
+      searchInput.focus();
+      renderizarProductos();
+    });
+
+    /* -------------------------------------------------------
+       INICIALIZACIÓN
+    ------------------------------------------------------- */
+    document.getElementById("product-count").textContent = productos.length;
+    renderizarFiltros();
+    renderizarProductos();
+  </script>
+</body>
+</html>
