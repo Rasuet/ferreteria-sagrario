@@ -58,7 +58,7 @@
           </div>
           <div>
             <h1 class="text-white text-lg sm:text-2xl font-extrabold tracking-tight leading-none">
-              Ferretería Central
+              Ferretería El Cruce
             </h1>
             <p class="text-brand-yellow text-xs font-medium tracking-widest uppercase hidden sm:block">
               Catálogo de Productos
@@ -122,8 +122,8 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
     <!-- Contador de resultados -->
-    <div class="flex items-center justify-between mb-6">
-      <p id="results-label" class="text-sm text-gray-500 font-medium"></p>
+    <div class="flex items-center justify-between mb-4">
+      <p id="results-label" class="text-sm text-gray-600 font-medium mb-4"></p>
     </div>
 
     <!-- Grid -->
@@ -157,109 +157,24 @@
   <!-- ===== DATOS Y LÓGICA ===== -->
   <script>
     /* -------------------------------------------------------
-       DATOS DE PRODUCTOS
-       Para agregar un nuevo producto, añade un objeto al array
-       con los mismos campos: id, nombre, descripcion, categoria,
-       url_imagen y link_proveedor.
+       DATOS: se cargan desde productos.json (separado de la lógica)
     ------------------------------------------------------- */
-    const productos = [
-      {
-        id: 1,
-        nombre: "Taladro Percutor 700W",
-        descripcion: "Taladro percutor profesional con manija lateral, maletín y set de 13 brocas incluidas.",
-        categoria: "herramientas",
-        url_imagen: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&q=80",
-        link_proveedor: "https://example.com/taladro-percutor"
-      },
-      {
-        id: 2,
-        nombre: "Pintura Látex Interior Blanco 20L",
-        descripcion: "Pintura látex lavable de alto rendimiento para interiores, secado rápido y cobertura superior.",
-        categoria: "pintura",
-        url_imagen: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&q=80",
-        link_proveedor: "https://example.com/pintura-latex"
-      },
-      {
-        id: 3,
-        nombre: "Juego de Destornilladores 12 pzas",
-        descripcion: "Set completo con destornilladores planos y Phillips en diferentes medidas, mango ergonómico.",
-        categoria: "herramientas",
-        url_imagen: "https://images.unsplash.com/photo-1581166397057-235af2b3c6dd?w=400&q=80",
-        link_proveedor: "https://example.com/destornilladores"
-      },
-      {
-        id: 4,
-        nombre: "Cemento Portland 50kg",
-        descripcion: "Cemento Portland tipo I de uso general, ideal para estructuras, pisos y revoques.",
-        categoria: "construcción",
-        url_imagen: "https://images.unsplash.com/photo-1590599145008-e4ec48bdb5e1?w=400&q=80",
-        link_proveedor: "https://example.com/cemento-portland"
-      },
-      {
-        id: 5,
-        nombre: "Llave de Tubo Ajustable 18\"",
-        descripcion: "Llave de tubo de acero forjado con quijada ajustable, acabado anticorrosión.",
-        categoria: "plomería",
-        url_imagen: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&q=80",
-        link_proveedor: "https://example.com/llave-tubo"
-      },
-      {
-        id: 6,
-        nombre: "Rodillo para Pintura 23cm",
-        descripcion: "Rodillo de lana natural para pintura látex y esmalte, alta absorción y acabado parejo.",
-        categoria: "pintura",
-        url_imagen: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
-        link_proveedor: "https://example.com/rodillo-pintura"
-      },
-      {
-        id: 7,
-        nombre: "Cable Eléctrico 2.5mm x 100m",
-        descripcion: "Rollo de cable unipolar THHN 2.5mm², aislamiento termoplástico, color rojo.",
-        categoria: "electricidad",
-        url_imagen: "https://images.unsplash.com/photo-1601974704572-acbb17f2c57b?w=400&q=80",
-        link_proveedor: "https://example.com/cable-electrico"
-      },
-      {
-        id: 8,
-        nombre: "Sierra Circular 7¼\" 1400W",
-        descripcion: "Sierra circular con guía láser integrada, base de aluminio y hoja de tungsteno de 24 dientes.",
-        categoria: "herramientas",
-        url_imagen: "https://images.unsplash.com/photo-1609793807520-87b09b4c36dc?w=400&q=80",
-        link_proveedor: "https://example.com/sierra-circular"
-      },
-      {
-        id: 9,
-        nombre: "Esmalte Sintético Negro Brillante 1L",
-        descripcion: "Esmalte sintético de secado rápido, alta resistencia a la intemperie y óxido.",
-        categoria: "pintura",
-        url_imagen: "https://images.unsplash.com/photo-1526045612212-70caf35c14df?w=400&q=80",
-        link_proveedor: "https://example.com/esmalte-sintetico"
-      },
-      {
-        id: 10,
-        nombre: "Caño PVC Presión 1\" x 6m",
-        descripcion: "Caño de PVC rígido para instalaciones de agua fría a presión, certificado NSF.",
-        categoria: "plomería",
-        url_imagen: "https://images.unsplash.com/photo-1558618047-f4e60cef3895?w=400&q=80",
-        link_proveedor: "https://example.com/cano-pvc"
-      },
-      {
-        id: 11,
-        nombre: "Martillo de Carpintero 500g",
-        descripcion: "Martillo de carpintero con cabeza de acero templado y mango de fibra de vidrio antideslizante.",
-        categoria: "herramientas",
-        url_imagen: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=400&q=80",
-        link_proveedor: "https://example.com/martillo-carpintero"
-      },
-      {
-        id: 12,
-        nombre: "Tomacorriente Doble con Tierra",
-        descripcion: "Tomacorriente bipolar 10A con contacto a tierra, apto para instalación empotrada.",
-        categoria: "electricidad",
-        url_imagen: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
-        link_proveedor: "https://example.com/tomacorriente"
-      }
-    ];
+    let productos = [];
+
+    /** Carga los productos desde productos.json y los normaliza para la vista. */
+    async function cargarProductos() {
+      const res = await fetch("productos.json");
+      if (!res.ok) throw new Error("No se pudieron cargar los productos");
+      const raw = await res.json();
+      return Array.isArray(raw) ? raw.map(p => ({
+        id: p.id,
+        nombre: p.nombre,
+        descripcion: p.descripcion || "",
+        categoria: (p.categoria || "").toLowerCase(),
+        url_imagen: p.imagen || p.url_imagen || "",
+        link_proveedor: p.link || p.link_proveedor || "#"
+      })) : [];
+    }
 
     /* -------------------------------------------------------
        CONFIGURACIÓN DE CATEGORÍAS
@@ -286,9 +201,11 @@
        RENDERIZADO DE TARJETAS
     ------------------------------------------------------- */
     function renderizarProductos() {
+      document.getElementById("products-grid").innerHTML = "";
       const grid      = document.getElementById("products-grid");
       const noResults = document.getElementById("no-results");
       const label     = document.getElementById("results-label");
+      const countTop  = document.getElementById("product-count");
 
       const filtrados = productos.filter(p => {
         const coincideTexto = p.nombre.toLowerCase().includes(filtroTexto.toLowerCase());
@@ -296,17 +213,14 @@
         return coincideTexto && coincideCat;
       });
 
-      grid.innerHTML = "";
+      countTop.textContent = filtrados.length;
 
       if (filtrados.length === 0) {
         noResults.style.display = "block";
         label.textContent = "";
       } else {
         noResults.style.display = "none";
-        label.textContent =
-          filtroTexto || filtroCategoria !== "todas"
-            ? `${filtrados.length} resultado${filtrados.length !== 1 ? "s" : ""} encontrado${filtrados.length !== 1 ? "s" : ""}`
-            : `Mostrando ${filtrados.length} productos`;
+        label.textContent = `Mostrando ${filtrados.length} producto${filtrados.length !== 1 ? "s" : ""}`;
 
         filtrados.forEach(producto => {
           const cfg  = getCatConfig(producto.categoria);
@@ -370,6 +284,7 @@
        FILTROS DE CATEGORÍA
     ------------------------------------------------------- */
     function renderizarFiltros() {
+      document.getElementById("category-filters").innerHTML = "";
       const container = document.getElementById("category-filters");
       const categorias = ["todas", ...new Set(productos.map(p => p.categoria))];
 
@@ -417,11 +332,18 @@
     });
 
     /* -------------------------------------------------------
-       INICIALIZACIÓN
+       INICIALIZACIÓN (espera a que los datos estén cargados)
     ------------------------------------------------------- */
-    document.getElementById("product-count").textContent = productos.length;
-    renderizarFiltros();
-    renderizarProductos();
+    (async function init() {
+      try {
+        productos = await cargarProductos();
+      } catch (e) {
+        console.error("Error cargando productos:", e);
+      }
+      document.getElementById("product-count").textContent = productos.length;
+      renderizarFiltros();
+      renderizarProductos();
+    })();
   </script>
 </body>
 </html>

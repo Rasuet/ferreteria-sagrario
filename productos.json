@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nombre": "Martillo de Carpintero",
+    "marca": "Bellota",
+    "categoria": "Herramientas",
+    "descripcion": "Mango de madera ergonómico.",
+    "imagen": "https://images.unsplash.com/photo-1586864387917-f538a5d92c01?w=400",
+    "link": "https://www.bellota.com"
+  },
+  {
+    "id": 2,
+    "nombre": "Taladro Percutor",
+    "marca": "Bosch",
+    "categoria": "Herramientas",
+    "descripcion": "Professional GSB 13 RE.",
+    "imagen": "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400",
+    "link": "https://www.bosch-professional.com"
+  },
+  {
+    "id": 3,
+    "nombre": "Pintura Plástica Blanca",
+    "marca": "Titan",
+    "categoria": "Pintura",
+    "descripcion": "Interior/Exterior acabado mate.",
+    "imagen": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400",
+    "link": "https://www.titanlux.es"
+  },
+  {
+    "id": 4,
+    "nombre": "Bolsa de Cemento 25kg",
+    "marca": "Holcim",
+    "categoria": "Construcción",
+    "descripcion": "Cemento gris de alta resistencia.",
+    "imagen": "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400",
+    "link": "#"
+  },
+  {
+    "id": 5,
+    "nombre": "Tubo PVC 110mm",
+    "marca": "Adequa",
+    "categoria": "Plomería",
+    "descripcion": "Tubo para evacuación de aguas.",
+    "imagen": "https://images.unsplash.com/photo-1585704032915-c3400ca1f963?w=400",
+    "link": "#"
+  },
+  {
+    "id": 6,
+    "nombre": "Caja de Mecanismos",
+    "marca": "Schneider",
+    "categoria": "Electricidad",
+    "descripcion": "Para empotrar en paredes de ladrillo.",
+    "imagen": "https://images.unsplash.com/photo-1558002038-1055907df827?w=400",
+    "link": "#"
+  }
+]
